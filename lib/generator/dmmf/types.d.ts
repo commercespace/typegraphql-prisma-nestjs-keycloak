@@ -1,3 +1,4 @@
+import { InputOmitSetting } from "../config";
 export declare namespace DMMF {
     interface Document {
         datamodel: Datamodel;
@@ -17,6 +18,7 @@ export declare namespace DMMF {
     interface Datamodel {
         models: Model[];
         enums: Enum[];
+        types: Model[];
     }
     interface UniqueIndex {
         name: string;
@@ -45,8 +47,10 @@ export declare namespace DMMF {
         isList: boolean;
         isUnique: boolean;
         isId: boolean;
+        isReadOnly: boolean;
+        isGenerated?: boolean;
+        isUpdatedAt?: boolean;
         dbNames?: string[] | null;
-        isGenerated: boolean;
         hasDefaultValue: boolean;
         default?: FieldDefault | string | boolean | number;
         relationToFields?: any[];
@@ -59,7 +63,7 @@ export declare namespace DMMF {
         fieldTSType: string;
         docs: string | undefined;
         isOmitted: {
-            input: boolean;
+            input: boolean | InputOmitSetting[];
             output: boolean;
         };
     }
@@ -106,7 +110,6 @@ export declare namespace DMMF {
     }
     interface OutputType {
         name: string;
-        isEmbedded?: boolean;
         fields: OutputSchemaField[];
         typeName: string;
     }
@@ -150,18 +153,6 @@ export declare namespace DMMF {
         resolverName: string;
         modelTypeName: string;
     }
-    interface Action {
-        name: string;
-        fieldName: string;
-        kind: ModelAction;
-        operation: "Query" | "Mutation";
-        method: OutputSchemaField;
-        argsTypeName: string | undefined;
-        outputTypeName: string;
-        actionResolverName: string;
-        returnTSType: string;
-        typeGraphQLType: string;
-    }
     enum ModelAction {
         findUnique = "findUnique",
         findFirst = "findFirst",
@@ -175,6 +166,18 @@ export declare namespace DMMF {
         deleteMany = "deleteMany",
         groupBy = "groupBy",
         aggregate = "aggregate"
+    }
+    interface Action {
+        name: string;
+        fieldName: string;
+        kind: ModelAction;
+        operation: "Query" | "Mutation";
+        method: OutputSchemaField;
+        argsTypeName: string | undefined;
+        outputTypeName: string;
+        actionResolverName: string;
+        returnTSType: string;
+        typeGraphQLType: string;
     }
     interface RelationModel {
         model: Model;
